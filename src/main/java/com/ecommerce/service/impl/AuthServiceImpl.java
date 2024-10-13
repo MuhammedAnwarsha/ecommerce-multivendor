@@ -3,9 +3,11 @@ package com.ecommerce.service.impl;
 import com.ecommerce.Enum.USER_ROLE;
 import com.ecommerce.config.JwtProvider;
 import com.ecommerce.modal.Cart;
+import com.ecommerce.modal.Seller;
 import com.ecommerce.modal.User;
 import com.ecommerce.modal.VerificationCode;
 import com.ecommerce.repository.CartRepository;
+import com.ecommerce.repository.SellerRepository;
 import com.ecommerce.repository.UserRepository;
 import com.ecommerce.repository.VerificationCodeRepository;
 import com.ecommerce.request.LoginRequest;
@@ -53,17 +55,27 @@ public class AuthServiceImpl implements AuthService {
     @Autowired
     private CustomUserServiceImpl customUserService;
 
+    @Autowired
+    private SellerRepository sellerRepository;
+
     @Override
-    public void sentLoginOtp(String email) throws Exception {
+    public void sentLoginOtp(String email, USER_ROLE role) throws Exception {
 
         String SIGNING_PREFIX = "signing_";
 
         if (email.startsWith(SIGNING_PREFIX)) {
             email = email.substring(SIGNING_PREFIX.length());
 
-            User user = userRepository.findByEmail(email);
-            if (user == null) {
-                throw new Exception("user not exist with provided email");
+            if (role.equals(USER_ROLE.ROLE_SELLER)) {
+                Seller seller = sellerRepository.findByEmail(email);
+                if (seller == null) {
+                    throw new Exception("seller not exist with provided email");
+                }
+            } else {
+                User user = userRepository.findByEmail(email);
+                if (user == null) {
+                    throw new Exception("user not exist with provided email");
+                }
             }
         }
 
@@ -145,6 +157,11 @@ public class AuthServiceImpl implements AuthService {
     private Authentication authenticate(String username, String otp) {
 
         UserDetails userDetails = customUserService.loadUserByUsername(username);
+
+        String SELLER_PREFIX = "seller_";
+        if (username.startsWith(SELLER_PREFIX)) {
+            username = username.substring(SELLER_PREFIX.length());
+        }
 
         if (userDetails == null) {
             throw new BadCredentialsException("invalid username");
