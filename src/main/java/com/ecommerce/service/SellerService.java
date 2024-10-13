@@ -1,6 +1,7 @@
 package com.ecommerce.service;
 
 import com.ecommerce.Enum.AccountStatus;
+import com.ecommerce.exceptions.SellerException;
 import com.ecommerce.modal.Seller;
 
 import java.util.List;
@@ -11,7 +12,7 @@ public interface SellerService {
 
     Seller createSeller(Seller seller) throws Exception;
 
-    Seller getSellerById(Long id) throws Exception;
+    Seller getSellerById(Long id) throws SellerException;
 
     Seller getSellerByEmail(String email) throws Exception;
 

@@ -1,6 +1,7 @@
 package com.ecommerce.controller;
 
 import com.ecommerce.Enum.AccountStatus;
+import com.ecommerce.exceptions.SellerException;
 import com.ecommerce.modal.Seller;
 import com.ecommerce.modal.SellerReport;
 import com.ecommerce.modal.VerificationCode;
@@ -82,7 +83,7 @@ public class SellerController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Seller> getSellerById(@PathVariable Long id) throws Exception {
+    public ResponseEntity<Seller> getSellerById(@PathVariable Long id) throws SellerException {
 
         Seller seller = sellerService.getSellerById(id);
         return ResponseEntity.ok(seller);
