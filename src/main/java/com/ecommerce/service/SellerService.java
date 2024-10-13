@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface SellerService {
 
-    Seller getSellerProfile(String jwt) throws Exception;
+    Seller getSellerProfile(String jwt) throws SellerException;
 
     Seller createSeller(Seller seller) throws Exception;
 
